@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using ProfilesApi.DB;
 
 namespace ProfilesApi
 {
@@ -26,6 +28,8 @@ namespace ProfilesApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddDbContext<ProfileContext>(opt => 
+                opt.UseInMemoryDatabase("ProfileList"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
