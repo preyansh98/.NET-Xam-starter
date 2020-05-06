@@ -1,19 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
-using ProfilesApi.DB;
+using Microsoft.Extensions.Options;
+using ProfileAPI.Domain; 
+using ProfileAPI.Services; 
 
-namespace ProfilesApi
+namespace backend
 {
     public class Startup
     {
@@ -28,8 +22,14 @@ namespace ProfilesApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<ProfileContext>(opt => 
-                opt.UseInMemoryDatabase("ProfileList"));
+
+            services.Configure<ProfileDatabaseSettings>(
+                Configuration.GetSection(nameof(ProfileDatabaseSettings)));
+
+            services.AddSingleton<IProfileDatabaseSettings>(sp =>
+                sp.GetRequiredService<IOptions<ProfileDatabaseSettings>>().Value);
+
+            services.AddSingleton<ProfileService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
